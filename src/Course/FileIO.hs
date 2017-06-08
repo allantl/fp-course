@@ -71,10 +71,12 @@ the contents of c
 -}
 
 -- /Tip:/ use @getArgs@ and @run@
-main ::
-  IO ()
+main :: IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \args ->
+    case args of
+      fName :. Nil -> run fName
+      _ -> return ()
 
 type FilePath =
   Chars
@@ -83,31 +85,32 @@ type FilePath =
 run ::
   FilePath
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run fName = do
+  files <- readFile fName
+  allFiles <- getFiles (lines files)
+  printFiles allFiles
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
-getFiles =
-  error "todo: Course.FileIO#getFiles"
+getFiles fPaths = sequence (getFile <$> fPaths)
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
-getFile =
-  error "todo: Course.FileIO#getFile"
+getFile fPath = readFile fPath >>= (\content -> return (fPath, content))
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
-printFiles =
-  error "todo: Course.FileIO#printFiles"
+printFiles = void . sequence . (<$>) (uncurry printFile)
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile fPath content = do
+  putStrLn ("============ " ++ fPath)
+  putStrLn content
+  return ()
 
